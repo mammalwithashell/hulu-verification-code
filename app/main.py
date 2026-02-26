@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import email_connections, streaming_accounts, verification
+from app.routers import email_connections, streaming_accounts, verification, shares
 
 app = FastAPI(title="Hulu Verification Code API", version="0.1.0")
 
@@ -18,6 +18,7 @@ app.add_middleware(
 app.include_router(email_connections.router)
 app.include_router(streaming_accounts.router)
 app.include_router(verification.router)
+app.include_router(shares.router)
 
 
 @app.get("/v1/health")
