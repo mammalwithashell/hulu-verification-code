@@ -24,7 +24,7 @@ def _make_engine():
 def test_create_user():
     engine = _make_engine()
     with Session(engine) as session:
-        user = User(email="test@example.com", display_name="Test User")
+        user = User(email="test@example.com", display_name="Test User", hashed_password="hashed")
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -39,7 +39,7 @@ def test_create_user():
 def test_create_email_connection():
     engine = _make_engine()
     with Session(engine) as session:
-        user = User(email="test@example.com", display_name="Test")
+        user = User(email="test@example.com", display_name="Test", hashed_password="hashed")
         session.add(user)
         session.flush()
 
@@ -64,7 +64,7 @@ def test_create_email_connection():
 def test_create_streaming_account():
     engine = _make_engine()
     with Session(engine) as session:
-        user = User(email="test@example.com", display_name="Test")
+        user = User(email="test@example.com", display_name="Test", hashed_password="hashed")
         session.add(user)
         session.flush()
 
@@ -96,8 +96,8 @@ def test_create_streaming_account():
 def test_create_shared_access():
     engine = _make_engine()
     with Session(engine) as session:
-        owner = User(email="owner@example.com", display_name="Owner")
-        grantee = User(email="grantee@example.com", display_name="Grantee")
+        owner = User(email="owner@example.com", display_name="Owner", hashed_password="hashed")
+        grantee = User(email="grantee@example.com", display_name="Grantee", hashed_password="hashed")
         session.add_all([owner, grantee])
         session.flush()
 
@@ -137,7 +137,7 @@ def test_create_shared_access():
 def test_create_verification_request_and_event():
     engine = _make_engine()
     with Session(engine) as session:
-        user = User(email="test@example.com", display_name="Test")
+        user = User(email="test@example.com", display_name="Test", hashed_password="hashed")
         session.add(user)
         session.flush()
 
@@ -190,10 +190,10 @@ def test_user_email_unique_constraint():
     import pytest
 
     with Session(engine) as session:
-        session.add(User(email="dup@example.com", display_name="A"))
+        session.add(User(email="dup@example.com", display_name="A", hashed_password="hashed"))
         session.commit()
 
     with Session(engine) as session:
-        session.add(User(email="dup@example.com", display_name="B"))
+        session.add(User(email="dup@example.com", display_name="B", hashed_password="hashed"))
         with pytest.raises(IntegrityError):
             session.commit()

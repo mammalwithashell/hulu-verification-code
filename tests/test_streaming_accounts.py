@@ -2,7 +2,7 @@ import uuid
 
 from app.models import EmailConnection
 from app.encryption import encrypt_secret
-from app.auth import get_current_user
+from tests.conftest import create_test_user, auth_header
 
 
 def _seed_email_connection(db_session, user):
@@ -20,15 +20,15 @@ def _seed_email_connection(db_session, user):
     return conn
 
 
-def test_create_streaming_account(client, db_session):
-    user = get_current_user(db_session)
+def test_create_streaming_account(client, db_session, authenticated_user):
+    user, token = authenticated_user
     conn = _seed_email_connection(db_session, user)
 
     resp = client.post("/v1/streaming-accounts", json={
         "email_connection_id": str(conn.id),
         "service_name": "Hulu",
         "account_label": "Family Hulu",
-    })
+    }, headers=auth_header(token))
     assert resp.status_code == 201
     data = resp.json()
     assert data["service_name"] == "Hulu"
@@ -36,32 +36,32 @@ def test_create_streaming_account(client, db_session):
     assert "id" in data
 
 
-def test_create_streaming_account_bad_connection(client, db_session):
+def test_create_streaming_account_bad_connection(client, db_session, auth_headers):
     resp = client.post("/v1/streaming-accounts", json={
         "email_connection_id": str(uuid.uuid4()),
         "service_name": "Hulu",
         "account_label": "Family Hulu",
-    })
+    }, headers=auth_headers)
     assert resp.status_code == 404
 
 
-def test_list_streaming_accounts_empty(client):
-    resp = client.get("/v1/streaming-accounts")
+def test_list_streaming_accounts_empty(client, auth_headers):
+    resp = client.get("/v1/streaming-accounts", headers=auth_headers)
     assert resp.status_code == 200
     assert resp.json() == []
 
 
-def test_list_streaming_accounts_returns_owned(client, db_session):
-    user = get_current_user(db_session)
+def test_list_streaming_accounts_returns_owned(client, db_session, authenticated_user):
+    user, token = authenticated_user
     conn = _seed_email_connection(db_session, user)
 
     client.post("/v1/streaming-accounts", json={
         "email_connection_id": str(conn.id),
         "service_name": "Hulu",
         "account_label": "Family Hulu",
-    })
+    }, headers=auth_header(token))
 
-    resp = client.get("/v1/streaming-accounts")
+    resp = client.get("/v1/streaming-accounts", headers=auth_header(token))
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
