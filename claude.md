@@ -59,6 +59,13 @@ Prefer small, iterative, PR-style changes over large rewrites.
   - owner can grant/revoke share access
   - shared user can request only explicitly granted account codes
 
+## Project Management
+- **Notion project page:** https://www.notion.so/26e9797276348068900bdd97d987c01b
+- Located in: Personal Projects > Hub > ShareAccounts
+- Contains a Kanban board with tasks organized by Phase and Priority
+- Phases: Pre-req, Phase 4 (Deploy), Phase 5 (IMAP), Phase 6 (Frontend), Phase 7 (Hardening)
+- **Design spec:** `docs/superpowers/specs/2026-03-15-shipping-roadmap-design.md`
+
 ## Definition of Done
 - Endpoints are implemented and documented.
 - Tests cover parsing, IMAP retrieval behavior, and authorization paths.
